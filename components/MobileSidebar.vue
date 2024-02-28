@@ -15,7 +15,7 @@ const { isPro } = defineProps<{
         <Menu />
       </Button>
     </SheetTrigger>
-    <SheetContent side="left" class="p-0">
+    <SheetContent side="left" class="p-0 border-none">
       <Sidebar :isPro="isPro" />
     </SheetContent>
   </Sheet>
