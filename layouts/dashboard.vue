@@ -60,6 +60,6 @@ watch(
       </main>
     </div>
     <ProModal />
-    <!-- <CrispChat /> -->
+    <CrispChat />
   </ClerkLoaded>
 </template>
