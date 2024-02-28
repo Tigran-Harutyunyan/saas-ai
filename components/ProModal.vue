@@ -87,7 +87,7 @@ const onSubscribe = async () => {
           variant="premium"
           class="w-full"
         >
-          Upgrade
+          {{ loading ? "Redirecting..." : "Upgrade" }}
           <Zap class="w-4 h-4 ml-2 fill-white" />
         </Button>
       </DialogFooter>
