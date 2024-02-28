@@ -29,7 +29,12 @@ const { isPro, apiLimitCount } = defineProps<FreeCounterProps>();
             :model-value="(apiLimitCount / MAX_FREE_COUNTS) * 100"
           />
         </div>
-        <Button @click="setProModal(true)" variant="premium" class="w-full">
+        <Button
+          @click="setProModal(true)"
+          variant="premium"
+          class="w-full"
+          v-if="apiLimitCount === MAX_FREE_COUNTS"
+        >
           Upgrade
           <Zap class="w-4 h-4 ml-2 fill-white" />
         </Button>
