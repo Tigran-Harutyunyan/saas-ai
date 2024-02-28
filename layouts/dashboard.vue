@@ -7,9 +7,11 @@ import { useMainStore } from "@/stores/main";
 
 const { aiUsageEventTrigger } = storeToRefs(useMainStore());
 
+const { setPro } = useMainStore();
+
 const apiLimitCount = ref(0);
 
-const isPro = ref(false);
+const isPro = ref(true);
 
 const { data: isProData } = useLazyAsyncData("isProData", () =>
   $fetch("/api/subscription/check")
@@ -18,7 +20,9 @@ const { data: isProData } = useLazyAsyncData("isProData", () =>
 const { data: countData, refresh } = useLazyAsyncData(
   "countData",
   () => $fetch("/api/limitcount"),
-  { server: false }
+  {
+    server: false,
+  }
 );
 
 watch(countData, (newCount) => {
@@ -30,6 +34,7 @@ watch(countData, (newCount) => {
 watch(isProData, (newVal) => {
   if (typeof newVal === "boolean") {
     isPro.value = newVal;
+    setPro(newVal);
   }
 });
 
@@ -55,5 +60,6 @@ watch(
       </main>
     </div>
     <ProModal />
+    <CrispChat />
   </ClerkLoaded>
 </template>
