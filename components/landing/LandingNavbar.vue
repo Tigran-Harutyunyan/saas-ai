@@ -19,8 +19,8 @@ const isAuth = computed(() => {
       <h1 class="text-2xl font-bold text-white font-montserrat">Genius</h1>
     </Link>
     <div class="flex items-center gap-x-2">
-      <NuxtLink :to="isAuth ? '/dashboard' : '/sign-up'">
-        <Button variant="outline" class="rounded-full"> Get Started </Button>
+      <NuxtLink :to="isAuth ? '/dashboard' : '/sign-in'">
+        <Button variant="outline" class="rounded-full">Sign-in</Button>
       </NuxtLink>
     </div>
   </nav>
