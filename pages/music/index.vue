@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import "highlight.js/styles/default.css";
-import { Code } from "lucide-vue-next";
-import { formSchema } from "@/constants/code";
+import { Music } from "lucide-vue-next";
+import { formSchema } from "@/constants/music";
 import { useForm } from "vee-validate";
-import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,8 +14,6 @@ import Heading from "@/components/Heading.vue";
 
 import { useMainStore } from "@/stores/main";
 
-import { type ChatCompletionMessageParam } from "openai/resources/chat/completions";
-
 definePageMeta({ middleware: "auth", layout: "dashboard" });
 
 const { setProModal, updateEventTrigger } = useMainStore();
@@ -28,31 +24,22 @@ const form = useForm({
   validationSchema: formSchema,
 });
 
-const messages = ref<ChatCompletionMessageParam[]>([]);
+const music = ref<string>();
 
 const isLoading = ref(false);
 
 const onSubmit = form.handleSubmit(async (values) => {
+  music.value = undefined;
   isLoading.value = true;
 
-  const userMessage: ChatCompletionMessageParam = {
-    role: "user",
-    content: values.prompt,
-  };
-
-  messages.value.push(userMessage);
-
-  const newMessages = [...messages.value, userMessage];
-
   try {
-    const response = await $fetch("/api/code", {
+    const response = await $fetch("/api/music", {
       method: "POST",
-      body: { messages: newMessages },
+      body: { ...values },
     });
 
-    if (response && typeof response === "object" && "content" in response) {
-      messages.value.push(response);
-      form.resetForm();
+    if (response && typeof response === "object" && "audio" in response) {
+      music.value = response.audio;
     }
   } catch (error) {
     if (error?.response?.status === 403) {
@@ -74,14 +61,15 @@ const onSubmit = form.handleSubmit(async (values) => {
 <template>
   <div>
     <Heading
-      title="Code Generation"
-      description="Generate code using descriptive text."
-      :icon="Code"
-      iconColor="text-green-700"
-      bgColor="bg-green-700/10"
+      title="Music Generation"
+      description="Turn your prompt into music."
+      :icon="Music"
+      iconColor="text-emerald-500"
+      bgColor="bg-emerald-500/10"
     />
     <div class="px-4 lg:px-8">
       <form
+        lg:px-8
         @submit.prevent="onSubmit"
         class="rounded-lg border w-full p-4 px-3 md:px-6 focus-within:shadow-sm grid grid-cols-12 gap-2"
       >
@@ -92,7 +80,7 @@ const onSubmit = form.handleSubmit(async (values) => {
                 class="outline-none focus-visible:ring-0 focus-visible:ring-transparent"
                 v-bind="componentField"
                 :disabled="isLoading"
-                placeholder="Javascript closure"
+                placeholder="Piano solo"
               />
             </FormControl>
           </FormItem>
@@ -111,48 +99,12 @@ const onSubmit = form.handleSubmit(async (values) => {
         <div v-if="isLoading" class="p-20">
           <Loader />
         </div>
-        <Empty
-          v-if="messages.length === 0 && !isLoading"
-          label="No code generation started."
-        />
-        <div class="flex flex-col-reverse gap-y-4">
-          <div
-            v-for="message in messages"
-            :key="message.content"
-            :class="
-              cn(
-                'p-8 w-full flex items-start gap-x-8 rounded-lg',
-                message.role === 'user'
-                  ? 'bg-white border border-black/10 items-center'
-                  : 'bg-muted'
-              )
-            "
-          >
-            <UserAvatar v-if="message.role === 'user'" />
-            <BotAvatar v-else />
+        <Empty v-if="!music && !isLoading" label="No music file generated." />
 
-            <p class="text-sm" v-if="message.role === 'user'">
-              {{ message.content }}
-            </p>
-
-            <div
-              v-else
-              v-html="$md.render(message.content!)"
-              class="markdown-it-content"
-            ></div>
-          </div>
-        </div>
+        <audio v-if="music" controls class="w-full mt-8">
+          <source :src="music" />
+        </audio>
       </div>
     </div>
   </div>
 </template>
-<style>
-.markdown-it-content pre {
-  margin: 20px 0;
-}
-
-.markdown-it-content > p {
-  line-height: 28px;
-  font-family: "POPPINS";
-}
-</style>

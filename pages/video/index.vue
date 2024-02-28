@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import "highlight.js/styles/default.css";
-import { Code } from "lucide-vue-next";
-import { formSchema } from "@/constants/code";
+import { FileAudio } from "lucide-vue-next";
+import { formSchema } from "@/constants/video";
 import { useForm } from "vee-validate";
-import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,8 +14,6 @@ import Heading from "@/components/Heading.vue";
 
 import { useMainStore } from "@/stores/main";
 
-import { type ChatCompletionMessageParam } from "openai/resources/chat/completions";
-
 definePageMeta({ middleware: "auth", layout: "dashboard" });
 
 const { setProModal, updateEventTrigger } = useMainStore();
@@ -28,31 +24,22 @@ const form = useForm({
   validationSchema: formSchema,
 });
 
-const messages = ref<ChatCompletionMessageParam[]>([]);
+const video = ref<string>();
 
 const isLoading = ref(false);
 
 const onSubmit = form.handleSubmit(async (values) => {
+  video.value = undefined;
   isLoading.value = true;
 
-  const userMessage: ChatCompletionMessageParam = {
-    role: "user",
-    content: values.prompt,
-  };
-
-  messages.value.push(userMessage);
-
-  const newMessages = [...messages.value, userMessage];
-
   try {
-    const response = await $fetch("/api/code", {
+    const response = await $fetch("/api/video", {
       method: "POST",
-      body: { messages: newMessages },
+      body: { ...values },
     });
 
-    if (response && typeof response === "object" && "content" in response) {
-      messages.value.push(response);
-      form.resetForm();
+    if (response && Array.isArray(response)) {
+      video.value = response[0];
     }
   } catch (error) {
     if (error?.response?.status === 403) {
@@ -74,11 +61,11 @@ const onSubmit = form.handleSubmit(async (values) => {
 <template>
   <div>
     <Heading
-      title="Code Generation"
-      description="Generate code using descriptive text."
-      :icon="Code"
-      iconColor="text-green-700"
-      bgColor="bg-green-700/10"
+      title="Video Generation"
+      description="Turn your prompt into video."
+      :icon="FileAudio"
+      iconColor="text-orange-700"
+      bgColor="bg-orange-700/10"
     />
     <div class="px-4 lg:px-8">
       <form
@@ -92,7 +79,7 @@ const onSubmit = form.handleSubmit(async (values) => {
                 class="outline-none focus-visible:ring-0 focus-visible:ring-transparent"
                 v-bind="componentField"
                 :disabled="isLoading"
-                placeholder="Javascript closure"
+                placeholder="Clown fish swimming in a coral reef"
               />
             </FormControl>
           </FormItem>
@@ -111,48 +98,12 @@ const onSubmit = form.handleSubmit(async (values) => {
         <div v-if="isLoading" class="p-20">
           <Loader />
         </div>
-        <Empty
-          v-if="messages.length === 0 && !isLoading"
-          label="No code generation started."
-        />
-        <div class="flex flex-col-reverse gap-y-4">
-          <div
-            v-for="message in messages"
-            :key="message.content"
-            :class="
-              cn(
-                'p-8 w-full flex items-start gap-x-8 rounded-lg',
-                message.role === 'user'
-                  ? 'bg-white border border-black/10 items-center'
-                  : 'bg-muted'
-              )
-            "
-          >
-            <UserAvatar v-if="message.role === 'user'" />
-            <BotAvatar v-else />
+        <Empty v-if="!video && !isLoading" label="No video files generated." />
 
-            <p class="text-sm" v-if="message.role === 'user'">
-              {{ message.content }}
-            </p>
-
-            <div
-              v-else
-              v-html="$md.render(message.content!)"
-              class="markdown-it-content"
-            ></div>
-          </div>
-        </div>
+        <video v-if="video" controls class="w-full mt-8">
+          <source :src="video" />
+        </video>
       </div>
     </div>
   </div>
 </template>
-<style>
-.markdown-it-content pre {
-  margin: 20px 0;
-}
-
-.markdown-it-content > p {
-  line-height: 28px;
-  font-family: "POPPINS";
-}
-</style>

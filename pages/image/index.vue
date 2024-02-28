@@ -90,7 +90,7 @@ const onSubmit = form.handleSubmit(async (values) => {
           <FormItem class="col-span-12 lg:col-span-6">
             <FormControl class="m-0">
               <Input
-                class="border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
+                class="outline-none focus-visible:ring-0 focus-visible:ring-transparent"
                 v-bind="componentField"
                 :disabled="isLoading"
                 placeholder="A picture of a horse in Swiss alps"
