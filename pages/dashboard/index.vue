@@ -1,7 +1,7 @@
 <script setup lang="ts">
 definePageMeta({ middleware: "auth", layout: "dashboard" });
 useHead({
-  title: "Saas companion | Dashboard",
+  title: "Ai genius | Dashboard",
 });
 import { ArrowRight } from "lucide-vue-next";
 

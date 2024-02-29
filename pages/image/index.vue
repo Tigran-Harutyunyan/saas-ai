@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { Download, ImageIcon } from "lucide-vue-next";
-import { useClerkProvide } from "vue-clerk";
 import {
   amountOptions,
   formSchema,
@@ -25,6 +24,10 @@ import Empty from "@/components/Empty.vue";
 import Heading from "@/components/Heading.vue";
 
 import { useMainStore } from "@/stores/main";
+
+useHead({
+  title: "AI genius | Image",
+});
 
 definePageMeta({ middleware: "auth", layout: "dashboard" });
 

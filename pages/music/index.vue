@@ -14,6 +14,10 @@ import Heading from "@/components/Heading.vue";
 
 import { useMainStore } from "@/stores/main";
 
+useHead({
+  title: "AI genius | Music",
+});
+
 definePageMeta({ middleware: "auth", layout: "dashboard" });
 
 const { setProModal, updateEventTrigger } = useMainStore();

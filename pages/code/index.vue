@@ -18,6 +18,10 @@ import { useMainStore } from "@/stores/main";
 
 import { type ChatCompletionMessageParam } from "openai/resources/chat/completions";
 
+useHead({
+  title: "AI genius | Code",
+});
+
 definePageMeta({ middleware: "auth", layout: "dashboard" });
 
 const { setProModal, updateEventTrigger } = useMainStore();
