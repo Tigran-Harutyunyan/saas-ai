@@ -6,4 +6,7 @@ import Toaster from "@/components/ui/toast/Toaster.vue";
     <NuxtPage />
   </NuxtLayout>
   <Toaster />
+  <ClientOnly>
+    <CrispChat />
+  </ClientOnly>
 </template>
