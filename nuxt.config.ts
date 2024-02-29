@@ -5,6 +5,13 @@ export default defineNuxtConfig({
   build: {
     transpile: ['vue-clerk', '@clerk/clerk-js'],
   },
+  app: {
+    head: {
+      link: [
+        { rel: 'icon', type: 'image/svg', href: '/images/logo.png' }
+      ],
+    }
+  },
   shadcn: {
     /**
      * Prefix for all the imported component
