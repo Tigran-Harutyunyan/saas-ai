@@ -1,6 +1,6 @@
 # SaaS AI Companion with Nuxt.js, Vue, Tailwind, Prisma, Stripe, OpenAI, Replicate models
 
-[Live Demo](https://saas-generator-nuxt.vercel.app/)
+[Live Demo]((https://saas-ai-production.up.railway.app))
 
 Features:
 
